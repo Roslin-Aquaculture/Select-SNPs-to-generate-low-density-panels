@@ -4,13 +4,12 @@
 library(data.table)
 
 #set the path to your working directory
-dir <- file.path("C:/Users/s1899268/OneDrive - University of Edinburgh/Temp_Trout_CF_CK")
-#dir <- file.path("your_path")
+dir <- file.path("your_path")
 
 #Create a file that has these columns for your map file: chromosome, first_SNP_pos, last_SNP_pos, total_chr_distance (last_SNP_pos-first_SNP_pos),	SNPs/chrom (SNPs per chromosome)
 
 #Read the file with the chromosome start and end position
-chr_length<- read.table("rainbow_trout_chr_length.txt", header = TRUE)
+chr_length<- read.table("chr_length.txt", header = TRUE)
 head(chr_length)
 #calculate (relative) total length of the chromosomes 
 total_length<- sum(chr_length$total_chr_distance)
