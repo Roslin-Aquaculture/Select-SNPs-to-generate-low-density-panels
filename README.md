@@ -2,12 +2,15 @@
 
 This R script selects SNPs from a given map file and outputs a list with the SNP IDs and SNP positions to create a low-density panel of a predetermined size. The SNPs selected are equally distributed across the genome and proportionally to chromosome length. Additionally, this script always selects the first and the last SNP of each chromosome.  
 
-##0. Input files
+## 0. Input files
 Two files are needed for this script:
 1. The first file (chr_info.txt) is a text file with the following columns: Chr, first_SNP_pos, last_SNP_pos, total_chr_distance (last_SNP_pos-first_SNP_pos),	SNPs/chrom (SNPs per chromosome)
-2. The second file (snp_info.txt) contains three columns: SNPID, Chr and BPPos
+![image](https://user-images.githubusercontent.com/74717500/216952696-caabe7f7-9380-4997-aeac-cf392f254907.png)
 
-##1. The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length once we define the number of SNPs in the low-density panel.
+2. The second file (snp_info.txt) contains three columns: SNPID, Chr and BPPos
+![image](https://user-images.githubusercontent.com/74717500/216953014-883ee2da-5a71-4678-963b-823b916b159c.png)
+
+## 1. The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length once we define the number of SNPs in the low-density panel.
 
 ```
 total_length<- sum(chr_length$total_chr_distance)
@@ -20,7 +23,7 @@ sum(n_snp_per_chr)    #check the total number of SNPs selected, should sum up to
 n_snp_per_chr
 ```
 
-##2. In the second part we take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel). These equidistant theoretical positions will be then used to find the nearest, real position on the map.  
+## 2. In the second part we take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel). These equidistant theoretical positions will be then used to find the nearest, real position on the map.  
 
 ```
 b_chr<- list()
@@ -29,7 +32,7 @@ for (i in 1:length(chr_length$Chr)) {
 }
 ```
 
-##3. In this step we find the nearest real positions on the map file of the theoritical positions, which we generated in the previous step.
+## 3. In this step we find the nearest real positions on the map file of the theoritical positions, which we generated in the previous step.
 (returns the coresponding rows of the nearest neighbor positions instead of the positions)
 
 ```
@@ -46,7 +49,7 @@ for (x in 1:length(chr_length$Chr)){
   }
 ```
 
-##4. Finally create a list with the equally spaced SNP IDs to keep within each chromosome according to its length
+## 4. Finally create a list with the equally spaced SNP IDs to keep within each chromosome according to its length
 
 ```
 LD_snp_ids<- list()
