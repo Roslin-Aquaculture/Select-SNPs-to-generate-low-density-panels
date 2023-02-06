@@ -8,6 +8,7 @@ Two files are needed for this script:
 ![image](https://user-images.githubusercontent.com/74717500/216952696-caabe7f7-9380-4997-aeac-cf392f254907.png)
 
 2. The second file (snp_info.txt) contains three columns: SNPID, Chr and BPPos
+
 ![image](https://user-images.githubusercontent.com/74717500/216953014-883ee2da-5a71-4678-963b-823b916b159c.png)
 
 ## 1. The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length once we define the number of SNPs in the low-density panel.
