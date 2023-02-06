@@ -16,8 +16,8 @@ The first part of the script prints out the number of SNPs that are going to be 
 
 ```
 total_length<- sum(chr_length$total_chr_distance)
-snp_in_LD_panel<- 300 #change this number to the required number of SNPs in your low-density (LD) panel  
-#Divide the desired number of SNPs you want to select (e.g. 300) in the LD panel with the total map length
+snp_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
+#Divide the desired number of SNPs you want to select (e.g. 200) in the LD panel with the total map length
 index<- snp_in_LD_panel/total_length
 #Multiply the length of each chr with the index above and round to get the number of SNPs that are going to be selected from each chromosome according to its relative length
 n_snp_per_chr<- round(index*chr_length$total_chr_distance, 0)
