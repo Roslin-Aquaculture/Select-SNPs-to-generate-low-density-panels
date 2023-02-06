@@ -11,7 +11,8 @@ Two files are needed for this script:
 
 ![image](https://user-images.githubusercontent.com/74717500/216953014-883ee2da-5a71-4678-963b-823b916b159c.png)
 
-## 1. The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length once we define the number of SNPs in the low-density panel.
+## 1. Define the SNP number in the low-density panel 
+The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length once we define the number of SNPs in the low-density panel.
 
 ```
 total_length<- sum(chr_length$total_chr_distance)
@@ -24,7 +25,8 @@ sum(n_snp_per_chr)    #check the total number of SNPs selected, should sum up to
 n_snp_per_chr
 ```
 
-## 2. In the second part we take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel). These equidistant theoretical positions will be then used to find the nearest, real position on the map.  
+## 2. Find the theoretical positions we want to keep for each chromosome
+In the second part we take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel). These equidistant theoretical positions will be then used to find the nearest, real position on the map.  
 
 ```
 b_chr<- list()
@@ -33,8 +35,9 @@ for (i in 1:length(chr_length$Chr)) {
 }
 ```
 
-## 3. In this step we find the nearest real positions on the map file of the theoritical positions, which we generated in the previous step.
-(returns the coresponding rows of the nearest neighbor positions instead of the positions)
+## 3. Find the actual positions we want to keep for each chromosome 
+In this step we find the nearest real positions on the map file of the theoritical positions, which we generated in the previous step.
+(returns the coresponding rows of the nearest neighbor positions instead of the positions).
 
 ```
 s<- list()
@@ -50,7 +53,8 @@ for (x in 1:length(chr_length$Chr)){
   }
 ```
 
-## 4. Finally create a list with the equally spaced SNP IDs to keep within each chromosome according to its length
+## 4. Store the SNP IDs we selected for our low-density panel
+Finally create a list with the equally spaced SNP IDs to keep within each chromosome according to its length.
 
 ```
 LD_snp_ids<- list()
