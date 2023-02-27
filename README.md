@@ -5,6 +5,7 @@ This R script selects SNPs from a given map file and outputs a list with the SNP
 ## 0. Input files
 Two files are needed for this script:
 1. The first file (chr_info.txt) is a text file with the following columns: chromosome, first SNP position, last SNP position, total chromosome distance (last_SNP_pos - first_SNP_pos),	SNPs per chromosome.
+
 ![image](https://user-images.githubusercontent.com/74717500/216952696-caabe7f7-9380-4997-aeac-cf392f254907.png)
 
 2. The second file (snp_info.txt) contains three columns: SNP ID, chromosome and base pair position.
