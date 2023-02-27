@@ -13,17 +13,18 @@ Two files are needed for this script:
 ![image](https://user-images.githubusercontent.com/74717500/216953014-883ee2da-5a71-4678-963b-823b916b159c.png)
 
 ## 1. Define the number of SNPs in the low-density panel 
-The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length, once we define the number of SNPs we want to have in the low-density panel.
+The first part of the script prints out the number of SNPs that are going to be selected from each chromosome according to its length, once we define the number of SNPs we want to have in the low-density panel (snps_in_LD_panel).
 
 ```
+chr_length<- read.table("chr_info.txt", header = TRUE)
 total_length<- sum(chr_length$total_chr_distance)
-snp_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
+snps_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
 #Divide the desired number of SNPs you want to select (e.g. 200) in the LD panel with the total map length
-index<- snp_in_LD_panel/total_length
+index<- snps_in_LD_panel/total_length
 #Multiply the length of each chr with the index above and round to get the number of SNPs that are going to be selected from each chromosome according to its relative length
-n_snp_per_chr<- round(index*chr_length$total_chr_distance, 0)
-sum(n_snp_per_chr)    #check the total number of SNPs selected, should sum up to the desired number of SNPs in the LD panel  
-n_snp_per_chr
+n_snps_per_chr<- round(index*chr_length$total_chr_distance, 0)
+sum(n_snps_per_chr)    #check the total number of SNPs selected, should sum up to the desired number of SNPs in the LD panel  
+n_snps_per_chr
 ```
 
 ## 2. Find the theoretical positions we want to keep for each chromosome
@@ -32,7 +33,7 @@ In the second part we take each chromosome and divide it's length into equally d
 ```
 b_chr<- list()
 for (i in 1:length(chr_length$Chr)) {
-  b_chr[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snp_per_chr[i]), digits = 0)
+  b_chr[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snps_per_chr[i]), digits = 0)
 }
 ```
 
