@@ -75,13 +75,13 @@ for (i in 1:length(chr_length$Chr)) {
 #Returns the row of the nearest neighbor position instead of the position and we end up having a list with the SNPs we want to keep for each chromosome
 s<- list()
 for (x in 1:length(chr_length$Chr)){
-  test <- c()
+  selected <- c()
   for (i in 1:length(b_chr[[x]])) {
-  test[i]<- knnx.index(chr_bppos[[x]], b_chr[[x]][i], k=1)
-  chr_bppos[[x]][test[[i]]] <- 0
-  #test<- sort(test)
-  #print(length(unique(test)))
-  s[[x]] <- test
+  selected[i]<- knnx.index(chr_bppos[[x]], b_chr[[x]][i], k=1)
+  chr_bppos[[x]][selected[[i]]] <- 0
+  #selected<- sort(selected)
+  #print(length(unique(selected)))
+  s[[x]] <- selected
   }
   }
 
