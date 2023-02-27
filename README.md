@@ -19,22 +19,23 @@ The first part of the script prints out the number of SNPs that are going to be 
 chr_length<- read.table("chr_info.txt", header = TRUE)
 total_length<- sum(chr_length$total_chr_distance)
 snps_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
-#Divide the desired number of SNPs you want to select (e.g. 200) in the LD panel with the total map length
+#Divide the desired number of SNPs you want to select (e.g. 300) in the LD panel with the total map length
 index<- snps_in_LD_panel/total_length
 #Multiply the length of each chr with the index above and round to get the number of SNPs that are going to be selected from each chromosome according to its relative length
 n_snps_per_chr<- round(index*chr_length$total_chr_distance, 0)
 sum(n_snps_per_chr)    #check the total number of SNPs selected, should sum up to the desired number of SNPs in the LD panel  
-n_snps_per_chr
+
 ```
 
 ## 2. Find the theoretical positions we want to keep for each chromosome
 In the second part we take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel). These equidistant theoretical positions will be then used to find the nearest, real position on the map.  
 
 ```
-b_chr<- list()
+theor_pos<- list()
 for (i in 1:length(chr_length$Chr)) {
-  b_chr[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snps_per_chr[i]), digits = 0)
+  theor_pos[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snps_per_chr[i]), digits = 0)
 }
+
 ```
 
 ## 3. Find the actual positions we want to keep for each chromosome 
@@ -45,14 +46,15 @@ In this step we find the nearest real positions on the map file of the theoritic
 s<- list()
 for (x in 1:length(chr_length$Chr)){
   selected <- c()
-  for (i in 1:length(b_chr[[x]])) {
-  selected[i]<- knnx.index(chr_bppos[[x]], b_chr[[x]][i], k=1)
-  chr_bppos[[x]][selected[[i]]] <- 0
-  #selected<- sort(selected)
-  #print(length(unique(selected)))
-  s[[x]] <- selected
+  for (i in 1:length(theor_pos[[x]])) {
+    selected[i]<- knnx.index(chr_bppos[[x]], theor_pos[[x]][i], k=1)
+    chr_bppos[[x]][selected[[i]]] <- 0
+    #selected<- sort(selected)
+    #print(length(unique(selected)))
+    s[[x]] <- selected
   }
-  }
+}
+
 ```
 
 ## 4. Store the SNP IDs we selected for our low-density panel
@@ -63,4 +65,8 @@ LD_snp_ids<- list()
 for (i in 1:length(chr_length$Chr)){
   LD_snp_ids[[i]]<- chr_snpid[[i]][s[[i]]]
 }
+
+LD_ids<- unlist(LD_snp_ids)
+write.table(LD_ids, file="200_snps.txt" , quote=FALSE, col.names = FALSE, row.names = FALSE)
+
 ```
