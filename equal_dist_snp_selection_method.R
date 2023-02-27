@@ -16,13 +16,13 @@ head(chr_length)
 
 #Calculate the available total length of the chromosomes 
 total_length<- sum(chr_length$total_chr_distance)
-snp_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
+snps_in_LD_panel<- 200 #change this number to the required number of SNPs in your low-density (LD) panel  
 #Divide the desired number of SNPs you want to select (e.g. 300) in the LD panel with the total map length
-index<- snp_in_LD_panel/total_length
+index<- snps_in_LD_panel/total_length
 #Multiply the length of each chr with the index above and round to get the number of SNPs that are going to be selected from each chromosome according to its relative length
-n_snp_per_chr<- round(index*chr_length$total_chr_distance, 0)
-sum(n_snp_per_chr)    #check the total number of SNPs selected, should sum up to the desired number of SNPs in the LD panel  
-n_snp_per_chr    #prints the number of SNPs to be selected from each chromosome according to its length
+n_snps_per_chr<- round(index*chr_length$total_chr_distance, 0)
+sum(n_snps_per_chr)    #check the total number of SNPs selected, should sum up to the desired number of SNPs in the LD panel  
+n_snps_per_chr    #prints the number of SNPs to be selected from each chromosome according to its length
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Load the map file with the SNP IDs, chromosome number and physical position columns
@@ -36,14 +36,14 @@ chr_list = split(snpmap, snpmap$Chr)
 
 #Take each chromosome and divide it's length into equally distanced parts (equidistant positions), according to the number of SNPs we want to select (snp_in_LD_panel)
 #These equidistant theoretical positions will be then used to find the nearest real position on the map  
-b_chr<- list()
+theor_pos<- list()
 for (i in 1:length(chr_length$Chr)) {
-  b_chr[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snp_per_chr[i]), digits = 0)
+  theor_pos[[i]]<- round(seq(chr_length$first_SNP[i], chr_length$last_SNP[i], length.out = n_snps_per_chr[i]), digits = 0)
 }
 
 #Check that the length of the list for each chromosome equals the number of SNPs we want to keep for this chromosome
 for (i in 1:length(chr_length$Chr)){
-  print(length(b_chr[[i]]))
+  print(length(theor_pos[[i]]))
 } 
 
 
@@ -53,37 +53,36 @@ for (i in 1:length(chr_length$Chr)){
 chr_bppos = lapply(chr_list, "[", , "BPPos")
 chr_snpid = lapply(chr_list, "[", , "SNPID")
 
+#Find the nearest row of the theoritical positions to the real positions on the map file
 #Create a table with the theoretical positions we want to keep for each chromosome
-Merge_a_b<- list()
+Merge_real_theor<- list()
 for (i in 1:length(chr_length$Chr)) {
   a=data.table(Value=as.numeric(chr_bppos[[i]]))
   a[,merge:=Value]
   
-  b=data.table(Value=b_chr[[i]])
+  b=data.table(Value=theor_pos[[i]])
   b[,merge:=Value]
   
   setkeyv(a,c('merge'))
   setkeyv(b,c('merge'))
   
-  Merge_a_b[[i]]=a[b,roll='nearest']
-  print(length(unique(Merge_a_b[[i]][["Value"]]))) 
-  print(length(unique(Merge_a_b[[i]][["merge"]])))
+  Merge_real_theor[[i]]=a[b,roll='nearest']
+  print(length(unique(Merge_real_theor[[i]][["Value"]]))) 
+  print(length(unique(Merge_real_theor[[i]][["merge"]])))
 }
 
-
-#Find the nearest row of the theoritical positions to the real positions on the map file
 #Returns the row of the nearest neighbor position instead of the position and we end up having a list with the SNPs we want to keep for each chromosome
 s<- list()
 for (x in 1:length(chr_length$Chr)){
   selected <- c()
-  for (i in 1:length(b_chr[[x]])) {
-  selected[i]<- knnx.index(chr_bppos[[x]], b_chr[[x]][i], k=1)
-  chr_bppos[[x]][selected[[i]]] <- 0
-  #selected<- sort(selected)
-  #print(length(unique(selected)))
-  s[[x]] <- selected
+  for (i in 1:length(theor_pos[[x]])) {
+    selected[i]<- knnx.index(chr_bppos[[x]], theor_pos[[x]][i], k=1)
+    chr_bppos[[x]][selected[[i]]] <- 0
+    #selected<- sort(selected)
+    #print(length(unique(selected)))
+    s[[x]] <- selected
   }
-  }
+}
 
 
 #Check the total number of SNPs selected
@@ -95,7 +94,7 @@ print(sum(k))
 
 
 #Unlist the SNP position list of the SNPs chosen for the LD panel
-LD_pos<- unlist(b_chr)
+LD_pos<- unlist(theor_pos)
 #mysnps_ld<-snpmap[snpmap$BPPos %in%LD_pos,]
 #Create a list with the SNP IDs to keep within each chromosome 
 LD_snp_ids<- list()
@@ -105,4 +104,4 @@ for (i in 1:length(chr_length$Chr)){
 
 LD_ids<- unlist(LD_snp_ids)
 
-write.table(LD_ids, file="300_snps.txt" , quote=FALSE, col.names = FALSE, row.names = FALSE)
+write.table(LD_ids, file="200_snps.txt" , quote=FALSE, col.names = FALSE, row.names = FALSE)
